@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark border border-top-0 rounded container-fluid shadow mb-4">
+  <a class="navbar-brand" href="/">Военкомат г. Королев</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Главная</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/news">Новости</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/services">Услуги</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/contacts">Контакты</a>
+      </li>
+      {% if current_user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="/profile">Профиль</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Выйти</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

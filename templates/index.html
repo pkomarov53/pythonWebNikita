@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% block header %}
+        {% include "header.html" %}
+    {% endblock %}
+
+<div class="jumbotron container-fluid shadow-lg p-5 mb-5 bg-white rounded">
+    <h1 class="display-4 text-center">Добро пожаловать в Военкомат г. Королев!</h1>
+    <p class="lead text-center">Наш сайт предоставляет актуальную информацию и услуги для жителей города Королев.</p>
+    {% if not current_user.is_authenticated %}
+    <hr class="my-4">
+    <p class="text-center">У нас вы можете найти информацию о призыве, записаться на прием и получить консультации.</p>
+    <div class="d-flex justify-content-center">
+        <a class="btn btn-primary btn-lg mr-2" href="/register" role="button">Зарегистрироваться</a>
+        <a class="btn btn-secondary btn-lg" href="/login" role="button">Войти</a>
+    </div>
+    {% endif %}
+</div>
+
+  <div class="jumbotron container">
+      <div class="row mb-4">
+          <div class="col-md-12">
+              <h2>О нас</h2>
+              <p class="text-justify">Военкомат г. Королев предоставляет широкий спектр услуг, направленных на обеспечение обороноспособности нашей страны и поддержку граждан в вопросах, связанных с военной службой. Наши основные задачи включают:</p>
+              <ul class="text-justify">
+                  <li>Организацию и проведение призывных кампаний.</li>
+                  <li>Оформление приписных свидетельств и военных билетов.</li>
+                  <li>Проведение медицинских освидетельствований призывников и военнообязанных.</li>
+                  <li>Консультации по вопросам отсрочек и освобождений от военной службы.</li>
+                  <li>Организацию патриотических мероприятий и воспитательной работы среди молодежи.</li>
+                  <li>Взаимодействие с образовательными учреждениями по вопросам подготовки молодежи к военной службе.</li>
+                  <li>Ведение учета военнообязанных граждан и резервистов.</li>
+              </ul>
+              <img src="{{ url_for('static', filename='img/abouыt.jpg') }}" class="img-fluid rounded shadow mt-4" alt="О нас">
+          </div>
+      </div>
+  </div>
+
+<div class="jumbotron container shadow">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1>История военкомата</h1>
+            <p class="text-justify">Наш военкомат был основан в 1941 году и с тех пор служит важным звеном в обеспечении обороноспособности страны. За годы своей деятельности военкомат внес значительный вклад в подготовку и призыв граждан на военную службу, а также в проведение мобилизационных мероприятий.</p>
+            <p class="text-justify">В годы Великой Отечественной войны военкомат сыграл ключевую роль в организации и отправке на фронт тысяч добровольцев и призывников. После войны деятельность военкомата сосредоточилась на восстановлении и укреплении вооруженных сил страны.</p>
+            <p class="text-justify">В 1960-х и 1970-х годах военкомат активно участвовал в подготовке молодежи к службе в армии, организовывая учебные сборы и патриотические мероприятия.</p>
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/historical.jpg') }}" class="img-fluid rounded shadow" alt="История военкомата">
+        </div>
+    </div>
+</div>
+
+<div class="jumbotron container shadow">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/offers.jpg') }}" class="img-fluid rounded shadow" alt="Услуги военкомата">
+        </div>
+        <div class="col-md-6">
+            <h2>Услуги военкомата</h2>
+            <p>Мы предлагаем широкий спектр услуг, включая:</p>
+            <ul>
+                <li>Оформление приписных свидетельств и военных билетов</li>
+                <li>Консультации по вопросам военной службы</li>
+                <li>Запись на прием к специалистам</li>
+                <li>Информирование о призывных кампаниях и правилах призыва</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    {% block footer %}
+        {% include "footer.html" %}
+    {% endblock %}
+
+{% endblock %}

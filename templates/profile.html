@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Профиль пользователя</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Имя:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ user.first_name }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Фамилия:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ user.last_name }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Отчество:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ user.middle_name }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-5">
+                            <strong>Приписное свидетельство:</strong>
+                        </div>
+                        <div class="col-sm-7">
+                            {{ user.conscription_certificate if user.conscription_certificate else 'Не указано' }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-5">
+                            <strong>Военный билет:</strong>
+                        </div>
+                        <div class="col-sm-7">
+                            {{ user.military_id if user.military_id else 'Не указано' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Записи на прием в военкомат</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Тип записи</th>
+                                <th>Время записи</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in user.records %}
+                            <tr>
+                                <td>{{ record.type }}</td>
+                                <td>{{ record.time }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
