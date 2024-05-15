@@ -9,14 +9,16 @@
 <div class="jumbotron container-fluid shadow-lg p-5 mb-5 bg-white rounded">
     <h1 class="display-4 text-center">Добро пожаловать в Военкомат г. Королев!</h1>
     <p class="lead text-center">Наш сайт предоставляет актуальную информацию и услуги для жителей города Королев.</p>
-    {% if not current_user.is_authenticated %}
     <hr class="my-4">
     <p class="text-center">У нас вы можете найти информацию о призыве, записаться на прием и получить консультации.</p>
     <div class="d-flex justify-content-center">
-        <a class="btn btn-primary btn-lg mr-2" href="/register" role="button">Зарегистрироваться</a>
-        <a class="btn btn-secondary btn-lg" href="/login" role="button">Войти</a>
+        {% if current_user.is_authenticated %}
+            <a class="btn btn-primary btn-lg mr-2" href="{{ url_for('profile') }}" role="button">Записаться на прием</a>
+        {% else %}
+            <a class="btn btn-primary btn-lg mr-2" href="/register" role="button">Зарегистрироваться</a>
+            <a class="btn btn-secondary btn-lg" href="/login" role="button">Войти</a>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 
   <div class="jumbotron container">

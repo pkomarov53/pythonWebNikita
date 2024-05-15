@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SelectField, SubmitField, DateTimeLocalField
 from wtforms.validators import DataRequired, EqualTo, Optional
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
@@ -48,7 +48,12 @@ class Appointment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     appointment_type = db.Column(db.String(50), nullable=False)
     appointment_date = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', back_populates='appointments')
+
+
+User.appointments = db.relationship('Appointment', order_by=Appointment.id, back_populates='user')
 
 
 class LoginForm(FlaskForm):
@@ -72,6 +77,17 @@ class RegisterFormStep2(FlaskForm):
     conscription_certificate = StringField('Номер приписного свидетельства (при наличии)', validators=[Optional()])
     military_id = StringField('Номер военного билета (при наличии)', validators=[Optional()])
     submit = SubmitField('Регистрация')
+
+
+class AppointmentForm(FlaskForm):
+    appointment_type = SelectField('Тип приема', choices=[
+        ('consultation', 'Консультация'),
+        ('conscription_certificate', 'Получение приписного свидетельства'),
+        ('military_id', 'Получение военного билета'),
+        ('commission', 'Прохождение призывной комиссии')
+    ], validators=[DataRequired()])
+    appointment_date = DateTimeLocalField('Дата и время', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
+    submit = SubmitField('Записаться')
 
 
 @app.route('/')
@@ -132,10 +148,28 @@ def register_step2():
     return render_template('register_about.html', title='О вас', form=form)
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html', title='Profile', user=current_user)
+    form = AppointmentForm()
+    if form.validate_on_submit():
+        appointment = Appointment(
+            user_id=current_user.id,
+            appointment_type=form.appointment_type.data,
+            appointment_date=form.appointment_date.data
+        )
+        db.session.add(appointment)
+        db.session.commit()
+        flash('Вы успешно записались на прием!', 'success')
+        return redirect(url_for('profile'))
+    appointments = Appointment.query.filter_by(user_id=current_user.id).all()
+    appointment_type_dict = {
+        'consultation': 'Консультация',
+        'conscription_certificate': 'Получение приписного свидетельства',
+        'military_id': 'Получение военного билета',
+        'commission': 'Прохождение призывной комиссии'
+    }
+    return render_template('profile.html', title='Profile', user=current_user, form=form, appointments=appointments, appointment_type_dict=appointment_type_dict)
 
 
 if __name__ == '__main__':

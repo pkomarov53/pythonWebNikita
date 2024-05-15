@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
+{% block header %}
+  {% include "header.html" %}
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-8 offset-lg-2">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h4>Профиль пользователя</h4>
@@ -14,7 +18,7 @@
                             <strong>Имя:</strong>
                         </div>
                         <div class="col-sm-8">
-                            {{ user.first_name }}
+                            {{ current_user.first_name }}
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -22,7 +26,7 @@
                             <strong>Фамилия:</strong>
                         </div>
                         <div class="col-sm-8">
-                            {{ user.last_name }}
+                            {{ current_user.last_name }}
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -30,56 +34,76 @@
                             <strong>Отчество:</strong>
                         </div>
                         <div class="col-sm-8">
-                            {{ user.middle_name }}
+                            {{ current_user.middle_name }}
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-5">
-                            <strong>Приписное свидетельство:</strong>
+                        <div class="col-sm-4">
+                            <strong>Номер приписного свидетельства:</strong>
                         </div>
-                        <div class="col-sm-7">
-                            {{ user.conscription_certificate if user.conscription_certificate else 'Не указано' }}
+                        <div class="col-sm-8">
+                            {{ current_user.conscription_certificate if current_user.conscription_certificate else 'Не указано' }}
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-5">
-                            <strong>Военный билет:</strong>
+                        <div class="col-sm-4">
+                            <strong>Номер военного билета:</strong>
                         </div>
-                        <div class="col-sm-7">
-                            {{ user.military_id if user.military_id else 'Не указано' }}
+                        <div class="col-sm-8">
+                            {{ current_user.military_id if current_user.military_id else 'Не указано' }}
                         </div>
                     </div>
                 </div>
                 <div class="card-footer text-right">
                     <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4>Записи на прием в военкомат</h4>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Тип записи</th>
-                                <th>Время записи</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for record in user.records %}
-                            <tr>
-                                <td>{{ record.type }}</td>
-                                <td>{{ record.time }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <button class="btn btn-primary" data-toggle="collapse" data-target="#appointmentForm" aria-expanded="false" aria-controls="appointmentForm">Записаться на прием</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row mt-4 collapse" id="appointmentForm">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Записаться на прием</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.appointment_type.label(class="form-control-label") }}
+                            {{ form.appointment_type(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.appointment_date.label(class="form-control-label") }}
+                            {{ form.appointment_date(class="form-control", type="datetime-local") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-5">Ваши записи на прием</h2>
+    {% if appointments %}
+      <ul class="list-group">
+        {% for appointment in appointments %}
+          <li class="list-group-item">
+            <strong>Тип приема:</strong> {{ appointment_type_dict[appointment.appointment_type] }}<br>
+            <strong>Дата и время:</strong> {{ appointment.appointment_date.strftime('%Y-%m-%d %H:%M') }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>У вас нет записей на прием.</p>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block footer %}
+  {% include "footer.html" %}
 {% endblock %}
