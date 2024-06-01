@@ -3,7 +3,8 @@ from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SelectField, SubmitField, DateTimeLocalField
+from wtforms import StringField, PasswordField, BooleanField, SelectField, SubmitField, TextAreaField
+from wtforms_components import DateTimeLocalField
 from wtforms.validators import DataRequired, EqualTo, Optional
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
@@ -56,6 +57,13 @@ class Appointment(db.Model):
 User.appointments = db.relationship('Appointment', order_by=Appointment.id, back_populates='user')
 
 
+class News(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(128), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class LoginForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
@@ -90,9 +98,42 @@ class AppointmentForm(FlaskForm):
     submit = SubmitField('Записаться')
 
 
+class NewsForm(FlaskForm):
+    title = StringField('Заголовок', validators=[DataRequired()])
+    content = TextAreaField('Содержание', validators=[DataRequired()])
+    submit = SubmitField('Добавить новость')
+
+
+class UpdateProfileForm(FlaskForm):
+    first_name = StringField('Имя', validators=[DataRequired()])
+    middle_name = StringField('Фамилия', validators=[DataRequired()])
+    last_name = StringField('Отчество (при наличии)', validators=[Optional()])
+    conscription_certificate = StringField('Номер приписного свидетельства (при наличии)', validators=[Optional()])
+    military_id = StringField('Номер военного билета (при наличии)', validators=[Optional()])
+    submit = SubmitField('Обновить')
+
+
+# Add a new route to handle profile updates
+@app.route('/update_profile', methods=['GET', 'POST'])
+@login_required
+def update_profile():
+    form = UpdateProfileForm(obj=current_user)
+    if form.validate_on_submit():
+        current_user.first_name = form.first_name.data
+        current_user.middle_name = form.middle_name.data
+        current_user.last_name = form.last_name.data
+        current_user.conscription_certificate = form.conscription_certificate.data
+        current_user.military_id = form.military_id.data
+        db.session.commit()
+        flash('Ваш профиль обновлен!', 'success')
+        return redirect(url_for('profile'))
+    return render_template('update_profile.html', title='Обновить профиль', form=form)
+
+
 @app.route('/')
 def index():
-    return render_template('index.html', title='Главная')
+    news = News.query.order_by(News.created_at.desc()).all()
+    return render_template('index.html', title='Главная', news=news)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -169,7 +210,24 @@ def profile():
         'military_id': 'Получение военного билета',
         'commission': 'Прохождение призывной комиссии'
     }
-    return render_template('profile.html', title='Profile', user=current_user, form=form, appointments=appointments, appointment_type_dict=appointment_type_dict)
+    return render_template('profile.html', title='Profile', user=current_user, form=form, appointments=appointments,
+                           appointment_type_dict=appointment_type_dict)
+
+
+@app.route('/add_news', methods=['GET', 'POST'])
+@login_required
+def add_news():
+    form = NewsForm()
+    if form.validate_on_submit():
+        news = News(
+            title=form.title.data,
+            content=form.content.data
+        )
+        db.session.add(news)
+        db.session.commit()
+        flash('Новость добавлена!', 'success')
+        return redirect(url_for('index'))
+    return render_template('add_news.html', title='Добавить новость', form=form)
 
 
 if __name__ == '__main__':

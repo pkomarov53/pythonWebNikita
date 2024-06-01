@@ -2,11 +2,11 @@
 
 {% block content %}
   <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card" style="width: 100%; max-width: 400px;">
-      <div class="card-header">
-        <h2 class="text-center">Регистрация</h2>
+    <div class="card" style="width: 100%; max-width: 400px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+      <div class="card-header text-center bg-primary text-white">
+        <h2 class="mb-0">Регистрация</h2>
       </div>
-      <div class="card-body">
+      <div class="card-body p-4">
         <form action="" method="post">
           {{ form.hidden_tag() }}
           <div class="form-group">
@@ -25,6 +25,9 @@
             {{ form.submit(class="btn btn-primary btn-lg btn-block") }}
           </div>
         </form>
+      </div>
+      <div class="card-footer text-center">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Вернуться на главную</a>
       </div>
     </div>
   </div>
