@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="custom-container jumbotron row mb-4">
+<div class="custom-container jumbotron row mb-4" id="news-section">
     <div class="col-md-12">
         <h2 class="mb-3">Новости</h2>
         {% for news_item in news %}
@@ -33,12 +33,15 @@
     </div>
 </div>
 
-<div class="custom-container jumbotron container">
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <h2 class="mb-5">О нас</h2>
+<div id="about-section" class="custom-container jumbotron container my-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <img class="img-fluid" src="{{ url_for('static', filename='img/about.jpg') }}" alt="О нас">
+        </div>
+        <div class="col-md-6">
+            <h2 class="mb-4">О нас</h2>
             <p class="text-justify">Военкомат г. Королев предоставляет широкий спектр услуг, направленных на обеспечение обороноспособности нашей страны и поддержку граждан в вопросах, связанных с военной службой. Наши основные задачи включают:</p>
-            <ul class="text-justify">
+            <ul class="custom-list text-justify">
                 <li>Организацию и проведение призывных кампаний.</li>
                 <li>Оформление приписных свидетельств и военных билетов.</li>
                 <li>Проведение медицинских освидетельствований призывников и военнообязанных.</li>
@@ -47,12 +50,11 @@
                 <li>Взаимодействие с образовательными учреждениями по вопросам подготовки молодежи к военной службе.</li>
                 <li>Ведение учета военнообязанных граждан и резервистов.</li>
             </ul>
-            <img class="fluid" src="{{ url_for('static', filename='img/about.jpg') }}" alt="О нас">
         </div>
     </div>
 </div>
 
-<div class="custom-container jumbotron container shadow">
+<div id="history-section" class="custom-container jumbotron container shadow">
     <div class="row mb-4">
         <div class="col-md-6">
             <h1 class="mb-3">История военкомата</h1>
@@ -66,7 +68,7 @@
     </div>
 </div>
 
-<div class="custom-container jumbotron container shadow">
+<div id="services-section" class="custom-container jumbotron container shadow">
     <div class="row mb-4">
         <div class="col-md-6">
             <img src="{{ url_for('static', filename='img/offers.jpg') }}" alt="Услуги военкомата">
@@ -74,7 +76,7 @@
         <div class="col-md-6">
             <h2 class="mb-3">Услуги военкомата</h2>
             <p>Мы предлагаем широкий спектр услуг, включая:</p>
-            <ul>
+            <ul class="custom-list">
                 <li>Оформление приписных свидетельств и военных билетов</li>
                 <li>Консультации по вопросам военной службы</li>
                 <li>Запись на прием к специалистам</li>
@@ -84,8 +86,10 @@
     </div>
 </div>
 
+
     {% block footer %}
         {% include "footer.html" %}
     {% endblock %}
+
 
 {% endblock %}

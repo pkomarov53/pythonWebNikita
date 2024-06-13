@@ -50,11 +50,11 @@
                         </div>
                     </div>
                 </div>
-               <div class="card-footer text-right">
-                <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад</a>
-                <a href="{{ url_for('update_profile') }}" class="btn btn-primary">Изменить профиль</a>
-                <button class="btn btn-primary" data-toggle="collapse" data-target="#appointmentForm" aria-expanded="false" aria-controls="appointmentForm">Записаться на прием</button>
-            </div>
+                <div class="card-footer text-right">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад</a>
+                    <a href="{{ url_for('update_profile') }}" class="btn btn-primary">Изменить профиль</a>
+                    <button class="btn btn-primary" data-toggle="collapse" data-target="#appointmentForm" aria-expanded="false" aria-controls="appointmentForm">Записаться на прием</button>
+                </div>
             </div>
         </div>
     </div>
@@ -92,7 +92,12 @@
             {% for appointment in appointments %}
               <li class="list-group-item">
                 <strong>Тип приема:</strong> {{ appointment_type_dict[appointment.appointment_type] }}<br>
-                <strong>Дата и время:</strong> {{ appointment.appointment_date.strftime('%Y-%m-%d %H:%M') }}
+                <strong>Дата и время:</strong> {{ appointment.appointment_date.strftime('%Y-%m-%d %H:%M') }}<br>
+                <strong>Кабинет:</strong> {{ appointment_room_dict[appointment.appointment_type] }}
+                <form method="POST" action="{{ url_for('cancel_appointment', appointment_id=appointment.id) }}" class="d-inline">
+                  {{ cancel_form.hidden_tag() }}
+                  <button type="submit" class="btn btn-danger btn-sm">Отменить</button>
+                </form>
               </li>
             {% endfor %}
           </ul>

@@ -203,6 +203,8 @@ def profile():
         db.session.commit()
         flash('Вы успешно записались на прием!', 'success')
         return redirect(url_for('profile'))
+
+    cancel_form = FlaskForm()  # Simple form to include CSRF token
     appointments = Appointment.query.filter_by(user_id=current_user.id).all()
     appointment_type_dict = {
         'consultation': 'Консультация',
@@ -210,8 +212,15 @@ def profile():
         'military_id': 'Получение военного билета',
         'commission': 'Прохождение призывной комиссии'
     }
-    return render_template('profile.html', title='Profile', user=current_user, form=form, appointments=appointments,
-                           appointment_type_dict=appointment_type_dict)
+    appointment_room_dict = {
+        'consultation': '32',
+        'conscription_certificate': '34',
+        'military_id': '30',
+        'commission': '46'
+    }
+    return render_template('profile.html', title='Profile', user=current_user, form=form,
+                           cancel_form=cancel_form, appointments=appointments,
+                           appointment_type_dict=appointment_type_dict, appointment_room_dict=appointment_room_dict)
 
 
 @app.route('/add_news', methods=['GET', 'POST'])
@@ -228,6 +237,19 @@ def add_news():
         flash('Новость добавлена!', 'success')
         return redirect(url_for('index'))
     return render_template('add_news.html', title='Добавить новость', form=form)
+
+
+@app.route('/cancel_appointment/<int:appointment_id>', methods=['POST'])
+@login_required
+def cancel_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.user_id != current_user.id:
+        flash('Вы не можете отменить эту запись.', 'danger')
+        return redirect(url_for('profile'))
+    db.session.delete(appointment)
+    db.session.commit()
+    flash('Запись успешно отменена.', 'success')
+    return redirect(url_for('profile'))
 
 
 if __name__ == '__main__':
